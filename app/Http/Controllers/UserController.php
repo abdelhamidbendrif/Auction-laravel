@@ -6,12 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-
 class UserController extends Controller
 {
-    //
     function register(Request $req) {
-
         $user = new User;
         $user->name = $req->input('name');
         $user->email = $req->input('email');
@@ -29,7 +26,6 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
-    // getting a user by its id 
     function getUser($id) {
         return User::find($id);
     }
@@ -44,8 +40,11 @@ class UserController extends Controller
         return response()->json(['exists' => $usernameExists]);
     }
 
+    function searchUser($key) {
+        return User::where('name', 'like', "%$key%")->get();
+    }
+
     function uploadAvatar($id, Request $req) {
-        
         $req->validate([
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -57,5 +56,27 @@ class UserController extends Controller
         }
         $user->save();
         return $user;
+    }
+
+  
+    function update($id ,Request $req) {
+
+        $user = User::find($id);
+        if ($req->has('name')) {
+            $user->name = $req->input('name');
+        }
+        if ($req->has('email')) {
+            $user->email = $req->input('email');
+        }
+        if ($req->has('phone_number')) {
+            $user->phone_number = $req->input('phone_number');
+        }
+        if ($req->has('address')) {
+            $user->address = $req->input('address');
+        }
+       
+        $user->save();
+        return $user;
+
     }
 }

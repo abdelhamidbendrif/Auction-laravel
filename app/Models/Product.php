@@ -11,7 +11,7 @@ class Product extends Model
     use HasFactory;
 
     protected $primaryKey = 'pid';
-    protected $fillable = ['title', 'description', 'image', 'expiration_time'];
+    protected $fillable = ['name', 'description','image','category', 'expiration_time']; // Include 'category' in fillable fields
 
     /**
      * Calculate the remaining time until product expiration.
@@ -25,7 +25,7 @@ class Product extends Model
             $now = Carbon::now();
             $expiration = Carbon::parse($expirationTime);
             if ($now < $expiration) {
-                return $now->diff($expiration)->format('%Jj %Hh %Im %Ss');
+                return $now->diff($expiration)->format('%Yy %Mm %Dd %Hh %Im %Ss');
             }
         }
         return 'Expired';
