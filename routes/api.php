@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
 }); 
 
 Route::post('register',[UserController::class,'register']);
@@ -28,4 +29,6 @@ Route::post('/checkEmail', [UserController::class, 'checkEmail']);
 Route::post('/checkUsername', [UserController::class, 'checkUsername']);
 Route::get('product/{pid}/remaining-time', [ProductController::class, 'getRemainingTime']);
 Route::put('user/{id}', [UserController::class, 'update']);
+Route::put('user/{id}/update-password', [UserController::class, 'updatePassword']);
+Route::post('user/{id}/check-old-password', [UserController::class, 'checkOldPassword']);
 
