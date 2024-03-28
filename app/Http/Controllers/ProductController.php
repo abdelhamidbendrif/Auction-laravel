@@ -12,6 +12,8 @@ class ProductController extends Controller
     function getProduct($pid) {
         return Product::find($pid);
     }
+
+    
     public function getRemainingTime($pid)
     {
         $product = Product::findOrFail($pid);
@@ -52,6 +54,12 @@ class ProductController extends Controller
         return response()->json($userProducts);
     }
 
+    //get user product for the wishlist 
+    public function getUserWishList($uid) {
+        $userProducts = Product::where('user_id', $uid)->get();
+        return response()->json($userProducts);
+    }
+
     // list not working any more
     function list() {
         $user = auth()->user(); 
@@ -79,6 +87,9 @@ class ProductController extends Controller
         if ($req->has('price')) {
             $product->price = $req->input('price');
         }
+        if ($req->has('buyer_id')) {
+            $product->buyer_id = $req->input('buyer_id');
+        }
         if ($req->hasFile('file')) {
             $product->file_path = $req->file('file')->store('products');
         }
@@ -87,16 +98,20 @@ class ProductController extends Controller
 
     }
 
-    // this function is for getting the newest product in the table
-    function getNewestProducts() {
-        $newestProducts = Product::orderBy('created_at', 'asc')->limit(10)->get();
-        return response()->json($newestProducts);
-    }
+    //get the best products to show in the home page
+    function getTopAuctions() {
+        $auctions = Product::all(); 
+        $auctions = $auctions->sortByDesc(function($auction) {
+            $popularityScore = $auction->views + $auction->bids + $auction->favorites;
+            $remainingTimeScore = strtotime($auction->expiration_time) - time();
+            $priceScore = $auction->price;
+    
+            $importanceScore = $popularityScore * 0.5 + $remainingTimeScore * 0.3 + $priceScore * 0.2;
+            
+            return $importanceScore;
+        });
 
-    // this function is for getting the most expensive product in the table
-    function getMostExpensiveProducts() {
-        $mostExpensiveProducts = Product::orderBy('price', 'desc')->limit(10)->get();
-        return response()->json($mostExpensiveProducts);
+        return response()->json($auctions);
     }
 
     // this function is for search 

@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->bigIncrements('pid');
-            $table->string('name', 255); 
-            $table->text('description'); 
-            $table->string('price');
-            $table->string('file_path');
-            $table->string('user_id');
-            $table->string('buyer_id')->nullable();
-            $table->timestamp('expiration_time')->nullable(); 
+        Schema::create('wishlists', function (Blueprint $table) {
+            $table->bigIncrements('wish_id');
+            $table->string('user_id'); 
+            $table->string('product_id');
             $table->timestamps();
-
+    
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('pid')->on('products')->onDelete('cascade');
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('wishlists');
     }
 };

@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\WishListController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 
@@ -31,4 +31,7 @@ Route::get('product/{pid}/remaining-time', [ProductController::class, 'getRemain
 Route::put('user/{id}', [UserController::class, 'update']);
 Route::put('user/{id}/update-password', [UserController::class, 'updatePassword']);
 Route::post('user/{id}/check-old-password', [UserController::class, 'checkOldPassword']);
-
+Route::get('/top-auctions', [ProductController::class, 'getTopAuctions']);
+Route::post('wish',[WishListController::class,'addToWishList']);
+Route::get('getproducts/{uid}',[WishListController::class,'getWishList']);
+Route::delete('remove-from-wishlist/{uid}/{pid}', [WishListController::class,'removeFromWishList']);
